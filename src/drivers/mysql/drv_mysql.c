@@ -566,6 +566,9 @@ int mysql_drv_disconnect(db_conn_t *sb_conn)
 
 /* Prepare statement */
 
+// Forward declaration
+static db_error_t check_error(db_conn_t *sb_con, const char *func,
+                      const char *query, sb_counter_type_t *counter);
 
 int mysql_drv_prepare(db_stmt_t *stmt, const char *query, size_t len)
 {
