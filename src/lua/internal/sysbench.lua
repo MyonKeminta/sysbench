@@ -38,7 +38,10 @@ function thread_run(thread_id)
                ret.errcode == sysbench.error.RESTART_EVENT
             then
                if sysbench.hooks.before_restart_event then
-                  sysbench.hooks.before_restart_event(ret)
+                  local hookSuccess
+                  repeat
+                     hookSuccess, ret = pcall(sysbench.hooks.before_restart_event, ret)
+                  until hookSuccess or ret.errcode ~= sysbench.error.RESTART_EVENT
                end
             else
                error(ret, 2) -- propagate unknown errors
