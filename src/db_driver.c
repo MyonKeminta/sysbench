@@ -418,7 +418,7 @@ db_stmt_t *db_prepare(db_conn_t *con, const char *query, size_t len)
 
   stmt->connection = con;
 
-  db_error_t prepare_error = con->driver->ops.prepare(stmt, query, len)
+  db_error_t prepare_error = con->driver->ops.prepare(stmt, query, len);
   if (prepare_error)
   {
     con->error = prepare_error;
