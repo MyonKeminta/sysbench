@@ -611,7 +611,7 @@ int mysql_drv_prepare(db_stmt_t *stmt, const char *query, size_t len)
       else
       {
         sb_counter_type_t dummy_counter_type;
-        int ret = (int)check_error(con, "mysql_drv_prepare", query, &dummy_counter_type);
+        int ret = (int)check_error(stmt->connection, "mysql_drv_prepare", query, &dummy_counter_type);
         log_text(ret == DB_ERROR_FATAL ? LOG_FATAL : LOG_INFO, "mysql_stmt_prepare() failed");
         log_text(ret == DB_ERROR_FATAL ? LOG_FATAL : LOG_INFO, "MySQL error: %d \"%s\"", rc,
                  mysql_error(con));
