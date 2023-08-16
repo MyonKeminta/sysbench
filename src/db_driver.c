@@ -744,10 +744,15 @@ int db_free_results(db_result_t *rs)
 
 int db_close(db_stmt_t *stmt)
 {
+  if (stmt == NULL) {
+    log_text(LOG_ALERT, "attempt to close NULL stmt");
+    return 0;
+  }
+
   int       rc;
   db_conn_t *con = stmt->connection;
 
-  if (con->state == DB_CONN_INVALID)
+  if (con == NULL || con->state == DB_CONN_INVALID)
   {
     log_text(LOG_ALERT, "attempt to use an already closed connection");
     return 0;

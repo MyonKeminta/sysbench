@@ -374,14 +374,19 @@ end
 function close_statements()
    for t = 1, sysbench.opt.tables do
       for k, s in pairs(stmt[t]) do
-         stmt[t][k]:close()
+         if stmt[t][k] ~= nil then
+            stmt[t][k]:close()
+            stmt[t][k] = nil
+         end
       end
    end
    if (stmt.begin ~= nil) then
       stmt.begin:close()
+      stmt.begin = nil
    end
    if (stmt.commit ~= nil) then
       stmt.commit:close()
+      stmt.commit = nil
    end
 end
 
@@ -513,9 +518,15 @@ function check_reconnect()
    if sysbench.opt.reconnect > 0 then
       transactions = (transactions or 0) + 1
       if transactions % sysbench.opt.reconnect == 0 then
-         close_statements()
-         con:reconnect()
-         prepare_statements()
+         local success, ret
+         repeat
+            close_statements()
+            con:reconnect()
+            success, ret = pcall(prepare_statements)
+            if not success and ret.errcode ~= sysbench.error.RESTART_EVENT then
+               error(ret, 2)
+            end
+         until success
       end
    end
 end
